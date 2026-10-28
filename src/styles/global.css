@@ -1,0 +1,184 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+@layer base {
+  :root,
+  [data-theme="dark"] {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+    --card: 224 71% 7%;
+    --card-foreground: 213 31% 91%;
+    --popover: 224 71% 7%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 199 89% 48%;
+    --primary-foreground: 224 71% 4%;
+    --secondary: 222 47% 15%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 223 47% 11%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+    --ring: 199 89% 48%;
+    --radius: 0.625rem;
+  }
+
+  [data-theme="light"] {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 98%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
+    --radius: 0.625rem;
+  }
+
+  /* Catppuccin Latte (Light) */
+  [data-theme="latte"] {
+    --background: 220 23% 95%; /* #eff1f5 base */
+    --foreground: 234 16% 35%; /* #4c4f69 text */
+    --card: 223 16% 91%; /* #e6e9ef mantle */
+    --card-foreground: 234 16% 35%;
+    --popover: 223 16% 91%;
+    --popover-foreground: 234 16% 35%;
+    --primary: 266 85% 58%; /* #8839ef mauve */
+    --primary-foreground: 220 23% 95%;
+    --secondary: 220 17% 83%; /* #ccd0da surface0 */
+    --secondary-foreground: 234 16% 35%;
+    --muted: 220 17% 88%;
+    --muted-foreground: 233 11% 47%;
+    --accent: 231 97% 72%; /* #7287fd lavender */
+    --accent-foreground: 220 23% 95%;
+    --destructive: 347 87% 44%; /* #d20f39 red */
+    --destructive-foreground: 220 23% 95%;
+    --border: 220 17% 83%;
+    --input: 220 17% 83%;
+    --ring: 266 85% 58%;
+    --radius: 0.625rem;
+  }
+
+  /* Catppuccin Frappé */
+  [data-theme="frappe"] {
+    --background: 228 19% 23%; /* #303446 base */
+    --foreground: 228 71% 87%; /* #c6d0f5 text */
+    --card: 230 19% 20%; /* #292c3c mantle */
+    --card-foreground: 228 71% 87%;
+    --popover: 230 19% 20%;
+    --popover-foreground: 228 71% 87%;
+    --primary: 276 59% 76%; /* #ca9ee6 mauve */
+    --primary-foreground: 230 19% 20%;
+    --secondary: 231 15% 30%; /* #414559 surface0 */
+    --secondary-foreground: 228 71% 87%;
+    --muted: 231 15% 30%;
+    --muted-foreground: 229 27% 74%;
+    --accent: 238 67% 84%; /* #babbf1 lavender */
+    --accent-foreground: 230 19% 20%;
+    --destructive: 359 68% 71%; /* #e78284 red */
+    --destructive-foreground: 230 19% 20%;
+    --border: 231 14% 37%; /* #51576d surface1 */
+    --input: 231 14% 37%;
+    --ring: 276 59% 76%;
+    --radius: 0.625rem;
+  }
+
+  /* Catppuccin Macchiato */
+  [data-theme="macchiato"] {
+    --background: 232 23% 18%; /* #24273a base */
+    --foreground: 227 70% 88%; /* #cad3f5 text */
+    --card: 233 23% 15%; /* #1e2030 mantle */
+    --card-foreground: 227 70% 88%;
+    --popover: 233 23% 15%;
+    --popover-foreground: 227 70% 88%;
+    --primary: 266 85% 80%; /* #c6a0f6 mauve */
+    --primary-foreground: 233 23% 15%;
+    --secondary: 233 19% 26%; /* #363a4f surface0 */
+    --secondary-foreground: 227 70% 88%;
+    --muted: 233 19% 26%;
+    --muted-foreground: 228 29% 72%;
+    --accent: 235 83% 85%; /* #b7bdf8 lavender */
+    --accent-foreground: 233 23% 15%;
+    --destructive: 351 74% 73%; /* #ed8796 red */
+    --destructive-foreground: 233 23% 15%;
+    --border: 233 16% 34%; /* #494d64 surface1 */
+    --input: 233 16% 34%;
+    --ring: 266 85% 80%;
+    --radius: 0.625rem;
+  }
+
+  /* Catppuccin Mocha */
+  [data-theme="mocha"] {
+    --background: 240 21% 15%; /* #1e1e2e base */
+    --foreground: 226 64% 88%; /* #cdd6f4 text */
+    --card: 240 21% 12%; /* #181825 mantle */
+    --card-foreground: 226 64% 88%;
+    --popover: 240 21% 12%;
+    --popover-foreground: 226 64% 88%;
+    --primary: 267 84% 81%; /* #cba6f7 mauve */
+    --primary-foreground: 240 21% 12%;
+    --secondary: 237 16% 23%; /* #313244 surface0 */
+    --secondary-foreground: 226 64% 88%;
+    --muted: 237 16% 23%;
+    --muted-foreground: 228 24% 72%;
+    --accent: 235 96% 85%; /* #b4befe lavender */
+    --accent-foreground: 240 21% 12%;
+    --destructive: 343 81% 75%; /* #f38ba8 red */
+    --destructive-foreground: 240 21% 12%;
+    --border: 238 13% 31%; /* #45475a surface1 */
+    --input: 238 13% 31%;
+    --ring: 267 84% 81%;
+    --radius: 0.625rem;
+  }
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-feature-settings:
+    "rlig" 1,
+    "calt" 1;
+}

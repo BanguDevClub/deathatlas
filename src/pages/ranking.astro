@@ -1,0 +1,11 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { RankingTable } from "../components/RankingTable";
+---
+
+<Layout
+  title="Rankings — Death Atlas 2025"
+  description="Complete sortable, searchable, filterable ranking table of all 195 sovereign nations based on the Death Atlas Longevity & Safety Score. Exportable to CSV and JSON."
+>
+  <RankingTable client:load />
+</Layout>

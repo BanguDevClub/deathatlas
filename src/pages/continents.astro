@@ -1,0 +1,11 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { ContinentsView } from "../components/ContinentsView";
+---
+
+<Layout
+  title="Continents — Death Atlas 2025"
+  description="Comparative macro-regional mortality analytics across Africa, Asia, Europe, North America, South America, and Oceania for the year 2025."
+>
+  <ContinentsView client:load />
+</Layout>

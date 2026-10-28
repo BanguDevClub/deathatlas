@@ -1,0 +1,11 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { DashboardView } from "../components/DashboardView";
+---
+
+<Layout
+  title="Dashboard — Death Atlas 2025"
+  description="Explore detailed mortality dossiers for all 195 UN sovereign countries in 2025. In-depth analysis across Natural, External Accidental, and External Intentional causes."
+>
+  <DashboardView client:load />
+</Layout>

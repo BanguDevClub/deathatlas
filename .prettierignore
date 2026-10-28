@@ -1,0 +1,7 @@
+dist
+.astro
+node_modules
+.agents
+package-lock.json
+public/data/deaths-2025.json
+src/data/deaths-2025.json

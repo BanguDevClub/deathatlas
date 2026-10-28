@@ -1,0 +1,11 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { CompareView } from "../components/CompareView";
+---
+
+<Layout
+  title="Compare Countries — Death Atlas 2025"
+  description="Cross-national comparative analytics: juxtapose 2 or 3 countries side-by-side across radar dimensions, mortality triad groups, and cause taxonomies."
+>
+  <CompareView client:load />
+</Layout>

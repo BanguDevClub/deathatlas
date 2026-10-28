@@ -1,0 +1,11 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { SandboxSimulator } from "../components/SandboxSimulator";
+---
+
+<Layout
+  title="Sandbox Simulator — Death Atlas 2025"
+  description="Interactive mortality counterfactual simulator. Adjust global cause proportions and watch the Death Atlas Score recalculate live with KaTeX formula evaluations."
+>
+  <SandboxSimulator client:load />
+</Layout>

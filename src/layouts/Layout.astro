@@ -1,0 +1,80 @@
+---
+import "../styles/global.css";
+import { Navbar } from "../components/Navbar";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title = "Death Atlas — Global Mortality Metrics, Ranking & Longevity Observatory (2025)",
+  description = "An open-source MIT project by BanguDevClub analyzing how 195 nations die across Natural, Accidental, and Intentional causes. Featuring interactive dashboards, ranking indices, and KaTeX mathematical scoring.",
+  image = "/deathatlas/og-image.png",
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
+const siteUrl = "https://bangudevclub.github.io/deathatlas";
+const canonicalURL = new URL(Astro.url.pathname, siteUrl);
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/deathatlas/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="BanguDevClub" />
+    <meta
+      name="keywords"
+      content="death atlas, mortality metrics, 2025 death statistics, causes of death, global longevity, natural deaths, accidental deaths, intentional deaths, BanguDevClub"
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:site_name" content="Death Atlas" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#090d16" />
+
+    <!-- Early Theme Script to prevent flash of wrong theme -->
+    <script is:inline>
+      (function () {
+        try {
+          const theme = localStorage.getItem("deathatlas-theme") || "dark";
+          document.documentElement.setAttribute("data-theme", theme);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen flex flex-col bg-background text-foreground selection:bg-primary/30 selection:text-primary transition-colors">
+    <Navbar client:load currentPath={currentPath} />
+    <main class="flex-1 w-full">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
