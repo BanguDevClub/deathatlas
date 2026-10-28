@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { metadata, countries } from "@/lib/data";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -91,16 +92,15 @@ export const OverviewHero: React.FC = () => {
 
           {/* Quick Search */}
           <div className="relative w-full max-w-md mt-2">
-            <div className="relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search any of the 195 countries (e.g. Japan, Brazil, Ukraine)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-card/80 backdrop-blur text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
-              />
-            </div>
+            <Input
+              type="text"
+              placeholder="Search any of the 195 nations (e.g. Japan, Brazil, Ukraine)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClear={() => setSearchQuery("")}
+              prefixIcon={<Search className="size-4" />}
+              inputSize="lg"
+            />
             {filteredCountries.length > 0 && (
               <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-xl p-2 z-30 flex flex-col gap-1 text-left">
                 {filteredCountries.map((c) => (
@@ -109,7 +109,14 @@ export const OverviewHero: React.FC = () => {
                     href={`/deathatlas/dashboard?country=${c.id}`}
                     className="flex items-center justify-between p-2 rounded-lg hover:bg-muted text-xs transition-colors"
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        className="text-lg leading-none"
+                        role="img"
+                        aria-label={`${c.name} Flag`}
+                      >
+                        {c.flag}
+                      </span>
                       <span className="font-semibold text-foreground">
                         {c.name}
                       </span>
@@ -531,12 +538,20 @@ export const OverviewHero: React.FC = () => {
                     <span className="font-mono text-xs font-bold text-muted-foreground w-6">
                       #{c.rank}
                     </span>
+                    <span
+                      className="text-xl leading-none"
+                      role="img"
+                      aria-label={`${c.name} Flag`}
+                    >
+                      {c.flag}
+                    </span>
                     <div>
                       <p className="text-xs font-semibold text-foreground">
                         {c.name}
                       </p>
                       <p className="text-[10px] text-muted-foreground">
-                        Life Exp: {c.life_expectancy} yrs
+                        Life Exp: {c.life_expectancy} yrs •{" "}
+                        {c.rates_per_100k.total}/100k
                       </p>
                     </div>
                   </div>
@@ -581,13 +596,20 @@ export const OverviewHero: React.FC = () => {
                     <span className="font-mono text-xs font-bold text-muted-foreground w-6">
                       #{c.rank}
                     </span>
+                    <span
+                      className="text-xl leading-none"
+                      role="img"
+                      aria-label={`${c.name} Flag`}
+                    >
+                      {c.flag}
+                    </span>
                     <div>
                       <p className="text-xs font-semibold text-foreground">
                         {c.name}
                       </p>
                       <p className="text-[10px] text-amber-400">
                         {c.groups.intentional.percentage > 10
-                          ? `Intentional: ${c.groups.intentional.percentage}%`
+                          ? `⚔️ Intentional: ${c.groups.intentional.percentage}%`
                           : "High disease burden"}
                       </p>
                     </div>

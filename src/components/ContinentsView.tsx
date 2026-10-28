@@ -228,13 +228,13 @@ export const ContinentsView: React.FC = () => {
 
             <div className="flex items-center gap-4 text-xs font-mono">
               <div className="px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400">
-                Nat: {currentSummary.avgNaturalPct}%
+                🧬 Nat: {currentSummary.avgNaturalPct}%
               </div>
               <div className="px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400">
-                Acc: {currentSummary.avgAccidentalPct}%
+                ⚠️ Acc: {currentSummary.avgAccidentalPct}%
               </div>
               <div className="px-3 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400">
-                Int: {currentSummary.avgIntentionalPct}%
+                ⚔️ Int: {currentSummary.avgIntentionalPct}%
               </div>
             </div>
           </div>
@@ -244,19 +244,26 @@ export const ContinentsView: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 flex flex-col justify-between gap-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                  Highest Ranked Nation in {currentSummary.name}
+                <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <span>🏆 Highest Ranked in {currentSummary.name}</span>
                 </span>
                 <Badge variant="success">
                   Rank #{currentSummary.highestCountry.rank}
                 </Badge>
               </div>
               <div>
-                <h4 className="text-lg font-bold text-foreground">
-                  {currentSummary.highestCountry.name}
+                <h4 className="text-lg font-bold text-foreground flex items-center gap-2">
+                  <span
+                    className="text-2xl leading-none"
+                    role="img"
+                    aria-label="Flag"
+                  >
+                    {currentSummary.highestCountry.flag}
+                  </span>
+                  <span>{currentSummary.highestCountry.name}</span>
                 </h4>
-                <p className="text-xs text-muted-foreground">
-                  Score:{" "}
+                <p className="text-xs text-muted-foreground mt-1">
+                  Atlas Score:{" "}
                   <strong className="text-foreground">
                     {currentSummary.highestCountry.score}
                   </strong>{" "}
@@ -278,19 +285,26 @@ export const ContinentsView: React.FC = () => {
 
             <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 flex flex-col justify-between gap-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
-                  Lowest Ranked Nation in {currentSummary.name}
+                <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <span>⚠️ Lowest Ranked in {currentSummary.name}</span>
                 </span>
                 <Badge variant="warning">
                   Rank #{currentSummary.lowestCountry.rank}
                 </Badge>
               </div>
               <div>
-                <h4 className="text-lg font-bold text-foreground">
-                  {currentSummary.lowestCountry.name}
+                <h4 className="text-lg font-bold text-foreground flex items-center gap-2">
+                  <span
+                    className="text-2xl leading-none"
+                    role="img"
+                    aria-label="Flag"
+                  >
+                    {currentSummary.lowestCountry.flag}
+                  </span>
+                  <span>{currentSummary.lowestCountry.name}</span>
                 </h4>
-                <p className="text-xs text-muted-foreground">
-                  Score:{" "}
+                <p className="text-xs text-muted-foreground mt-1">
+                  Atlas Score:{" "}
                   <strong className="text-foreground">
                     {currentSummary.lowestCountry.score}
                   </strong>{" "}
@@ -321,9 +335,9 @@ export const ContinentsView: React.FC = () => {
                   <th className="p-3">Score</th>
                   <th className="p-3">Life Exp</th>
                   <th className="p-3">Deaths (2025)</th>
-                  <th className="p-3">Natural %</th>
-                  <th className="p-3">Accidental %</th>
-                  <th className="p-3">Intentional %</th>
+                  <th className="p-3">🧬 Natural %</th>
+                  <th className="p-3">⚠️ Accidental %</th>
+                  <th className="p-3">⚔️ Intentional %</th>
                   <th className="p-3">Data Quality</th>
                 </tr>
               </thead>
@@ -336,12 +350,19 @@ export const ContinentsView: React.FC = () => {
                     <td className="p-3 font-mono font-bold text-muted-foreground">
                       #{c.rank}
                     </td>
-                    <td className="p-3">
+                    <td className="p-3 font-semibold text-foreground">
                       <a
                         href={`/deathatlas/dashboard?country=${c.id}`}
-                        className="font-semibold text-foreground hover:text-primary transition-colors"
+                        className="hover:text-primary transition-colors inline-flex items-center gap-2"
                       >
-                        {c.name}
+                        <span
+                          className="text-base leading-none"
+                          role="img"
+                          aria-label="Flag"
+                        >
+                          {c.flag}
+                        </span>
+                        <span>{c.name}</span>
                       </a>
                     </td>
                     <td className="p-3 font-mono font-bold text-primary">

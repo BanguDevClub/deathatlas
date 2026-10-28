@@ -193,18 +193,17 @@ Death Atlas includes full toolchains for static typing, linting, code formatting
 
 Death Atlas includes full toolchains for static typing, linting, code formatting, data pipeline automation, and validation:
 
-| NPM Command | Purpose |
-| :--- | :--- |
-| `npm run typecheck` | Validates TypeScript & Astro files using `astro check` with strict diagnostics. |
-| `npm run lint` | Runs ESLint (flat config) across TypeScript and React source files. |
-| `npm run lint:fix` | Automatically fixes auto-fixable ESLint issues. |
-| `npm run format` | Formats all source files, configurations, and markdown with Prettier. |
-| `npm run format:check` | Verifies that all files conform to Prettier formatting guidelines. |
-| `npm run validate` | Runs `typecheck`, `lint`, and `format:check` in sequence (ideal for CI / pre-push). |
-| `npm run data:generate` | Re-executes the Python 2025 demographic synthesis pipeline and updates JSON files. |
-| `npm run assets:generate` | Re-generates high-resolution OG images (`og-image.png`) and vector icons. |
-| `npm run clean` | Cleans up the `dist/` and `.astro/` build artifact caches. |
-
+| NPM Command               | Purpose                                                                             |
+| :------------------------ | :---------------------------------------------------------------------------------- |
+| `npm run typecheck`       | Validates TypeScript & Astro files using `astro check` with strict diagnostics.     |
+| `npm run lint`            | Runs ESLint (flat config) across TypeScript and React source files.                 |
+| `npm run lint:fix`        | Automatically fixes auto-fixable ESLint issues.                                     |
+| `npm run format`          | Formats all source files, configurations, and markdown with Prettier.               |
+| `npm run format:check`    | Verifies that all files conform to Prettier formatting guidelines.                  |
+| `npm run validate`        | Runs `typecheck`, `lint`, and `format:check` in sequence (ideal for CI / pre-push). |
+| `npm run data:generate`   | Re-executes the Python 2025 demographic synthesis pipeline and updates JSON files.  |
+| `npm run assets:generate` | Re-generates high-resolution OG images (`og-image.png`) and vector icons.           |
+| `npm run clean`           | Cleans up the `dist/` and `.astro/` build artifact caches.                          |
 
 ---
 

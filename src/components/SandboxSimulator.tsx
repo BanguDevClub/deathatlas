@@ -362,7 +362,7 @@ export const SandboxSimulator: React.FC = () => {
           <CardContent className="flex flex-col gap-5">
             {/* Senescence */}
             <SliderRow
-              label="Old Age & Senescence"
+              label="⏳ Old Age & Senescence"
               weight={WEIGHTS.senescence}
               rawVal={state.senescence}
               pctVal={normalizedPercentages.senescence}
@@ -372,7 +372,7 @@ export const SandboxSimulator: React.FC = () => {
 
             {/* Neurodegenerative */}
             <SliderRow
-              label="Neurodegenerative (Alzheimer's)"
+              label="🧠 Neurodegenerative (Alzheimer's)"
               weight={WEIGHTS.neurodegenerative}
               rawVal={state.neurodegenerative}
               pctVal={normalizedPercentages.neurodegenerative}
@@ -382,7 +382,7 @@ export const SandboxSimulator: React.FC = () => {
 
             {/* Cancer */}
             <SliderRow
-              label="Neoplasms (Cancers)"
+              label="🎗️ Neoplasms (Cancers)"
               weight={WEIGHTS.neoplasms}
               rawVal={state.neoplasms}
               pctVal={normalizedPercentages.neoplasms}
@@ -392,7 +392,7 @@ export const SandboxSimulator: React.FC = () => {
 
             {/* Cardiovascular */}
             <SliderRow
-              label="Cardiovascular Diseases"
+              label="🫀 Cardiovascular Diseases"
               weight={WEIGHTS.cardiovascular}
               rawVal={state.cardiovascular}
               pctVal={normalizedPercentages.cardiovascular}
@@ -402,7 +402,7 @@ export const SandboxSimulator: React.FC = () => {
 
             {/* Infectious */}
             <SliderRow
-              label="Infectious & Communicable"
+              label="🦠 Infectious & Communicable"
               weight={WEIGHTS.infectious}
               rawVal={state.infectious}
               pctVal={normalizedPercentages.infectious}
@@ -412,7 +412,7 @@ export const SandboxSimulator: React.FC = () => {
 
             {/* Transport */}
             <SliderRow
-              label="Road & Transport Crashes"
+              label="🚗 Road & Transport Crashes"
               weight={WEIGHTS.transport}
               rawVal={state.transport}
               pctVal={normalizedPercentages.transport}
@@ -422,7 +422,7 @@ export const SandboxSimulator: React.FC = () => {
 
             {/* Homicide */}
             <SliderRow
-              label="Homicide & Violent Crime"
+              label="🔪 Homicide & Violent Crime"
               weight={WEIGHTS.homicide}
               rawVal={state.homicide}
               pctVal={normalizedPercentages.homicide}
@@ -432,7 +432,7 @@ export const SandboxSimulator: React.FC = () => {
 
             {/* War */}
             <SliderRow
-              label="Armed Conflict & War"
+              label="💣 Armed Conflict & War"
               weight={WEIGHTS.conflict_war}
               rawVal={state.conflict_war}
               pctVal={normalizedPercentages.conflict_war}
@@ -442,7 +442,7 @@ export const SandboxSimulator: React.FC = () => {
 
             {/* Suicide */}
             <SliderRow
-              label="Suicide & Self-Harm"
+              label="🖤 Suicide & Self-Harm"
               weight={WEIGHTS.suicide}
               rawVal={state.suicide}
               pctVal={normalizedPercentages.suicide}

@@ -3,6 +3,7 @@ import data from "../data/deaths-2025.json";
 export interface CauseBreakdownItem {
   total: number;
   percentage: number;
+  rate_per_100k?: number;
 }
 
 export interface NaturalBreakdown {
@@ -30,8 +31,31 @@ export interface IntentionalBreakdown {
   terrorism: CauseBreakdownItem;
 }
 
+export interface RatesPer100k {
+  total: number;
+  natural: number;
+  accidental: number;
+  intentional: number;
+  senescence: number;
+  cardiovascular: number;
+  neoplasms: number;
+  respiratory: number;
+  neurodegenerative: number;
+  infectious_maternal: number;
+  transport: number;
+  occupational: number;
+  natural_disasters: number;
+  falls_drowning_poisoning: number;
+  homicide: number;
+  suicide: number;
+  conflict_war: number;
+  terrorism: number;
+}
+
 export interface CountryData {
   id: string;
+  iso2: string;
+  flag: string;
   name: string;
   continent: string;
   region: string;
@@ -43,20 +67,24 @@ export interface CountryData {
   rank: number;
   data_confidence: "high" | "medium" | "low";
   confidence_note: string | null;
+  rates_per_100k: RatesPer100k;
   groups: {
     natural: {
       total: number;
       percentage: number;
+      rate_per_100k: number;
       breakdown: NaturalBreakdown;
     };
     accidental: {
       total: number;
       percentage: number;
+      rate_per_100k: number;
       breakdown: AccidentalBreakdown;
     };
     intentional: {
       total: number;
       percentage: number;
+      rate_per_100k: number;
       breakdown: IntentionalBreakdown;
     };
   };
@@ -73,6 +101,7 @@ export interface DatasetMetadata {
   global_population: number;
   global_deaths: number;
   global_crude_death_rate: number;
+  global_rate_per_100k: number;
   global_score: number;
   groups_summary: {
     natural: CauseBreakdownItem;
@@ -96,7 +125,11 @@ export const metadata = dataset.metadata;
 export const countries = dataset.countries;
 
 export function getCountryById(id: string): CountryData | undefined {
-  return countries.find((c) => c.id.toLowerCase() === id.toLowerCase());
+  return countries.find(
+    (c) =>
+      c.id.toLowerCase() === id.toLowerCase() ||
+      c.iso2.toLowerCase() === id.toLowerCase()
+  );
 }
 
 export function getCountriesByContinent(continent: string): CountryData[] {

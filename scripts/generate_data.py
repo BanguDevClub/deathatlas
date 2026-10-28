@@ -3,10 +3,39 @@
 Death Atlas - 2025 Global Mortality Dataset Generator
 Generates comprehensive mortality data for all 195 UN-recognized countries
 using UN WPP 2024/2025 projections, WHO GHE, IHME GBD, and conflict monitors.
+Includes Flag Emojis, ISO-2 codes, and Per-Capita Rates per 100k.
 """
 
 import json
 import os
+
+ISO3_TO_ISO2 = {
+    "AFG": "AF", "ALB": "AL", "DZA": "DZ", "AND": "AD", "AGO": "AO", "ATG": "AG", "ARG": "AR", "ARM": "AM", "AUS": "AU",
+    "AUT": "AT", "AZE": "AZ", "BHS": "BS", "BHR": "BH", "BGD": "BD", "BRB": "BB", "BLR": "BY", "BEL": "BE", "BLZ": "BZ",
+    "BEN": "BJ", "BTN": "BT", "BOL": "BO", "BIH": "BA", "BWA": "BW", "BRA": "BR", "BRN": "BN", "BGR": "BG", "BFA": "BF",
+    "BDI": "BI", "CPV": "CV", "KHM": "KH", "CMR": "CM", "CAN": "CA", "CAF": "CF", "TCD": "TD", "CHL": "CL", "CHN": "CN",
+    "COL": "CO", "COM": "KM", "COG": "CG", "COD": "CD", "CRI": "CR", "CIV": "CI", "HRV": "HR", "CUB": "CU", "CYP": "CY",
+    "CZE": "CZ", "DNK": "DK", "DJI": "DJ", "DMA": "DM", "DOM": "DO", "ECU": "EC", "EGY": "EG", "SLV": "SV", "GNQ": "GQ",
+    "ERI": "ER", "EST": "EE", "SWZ": "SZ", "ETH": "ET", "FJI": "FJ", "FIN": "FI", "FRA": "FR", "GAB": "GA", "GMB": "GM",
+    "GEO": "GE", "DEU": "DE", "GHA": "GH", "GRC": "GR", "GRD": "GD", "GTM": "GT", "GIN": "GN", "GNB": "GW", "GUY": "GY",
+    "HTI": "HT", "VAT": "VA", "HND": "HN", "HUN": "HU", "ISL": "IS", "IND": "IN", "IDN": "ID", "IRN": "IR", "IRQ": "IQ",
+    "IRL": "IE", "ISR": "IL", "ITA": "IT", "JAM": "JM", "JPN": "JP", "JOR": "JO", "KAZ": "KZ", "KEN": "KE", "KIR": "KI",
+    "PRK": "KP", "KOR": "KR", "KWT": "KW", "KGZ": "KG", "LAO": "LA", "LVA": "LV", "LBN": "LB", "LSO": "LS", "LBR": "LR",
+    "LBY": "LY", "LIE": "LI", "LTU": "LT", "LUX": "LU", "MDG": "MG", "MWI": "MW", "MYS": "MY", "MDV": "MV", "MLI": "ML",
+    "MLT": "MT", "MHL": "MH", "MRT": "MR", "MUS": "MU", "MEX": "MX", "FSM": "FM", "MDA": "MD", "MCO": "MC", "MNG": "MN",
+    "MNE": "ME", "MAR": "MA", "MOZ": "MZ", "MMR": "MM", "NAM": "NA", "NRU": "NR", "NPL": "NP", "NLD": "NL", "NZL": "NZ",
+    "NIC": "NI", "NER": "NE", "NGA": "NG", "MKD": "MK", "NOR": "NO", "OMN": "OM", "PAK": "PK", "PLW": "PW", "PSE": "PS",
+    "PAN": "PA", "PNG": "PG", "PRY": "PY", "PER": "PE", "PHL": "PH", "POL": "PL", "PRT": "PT", "QAT": "QA", "ROU": "RO",
+    "RUS": "RU", "RWA": "RW", "KNA": "KN", "LCA": "LC", "VCT": "VC", "WSM": "WS", "SMR": "SM", "STP": "ST", "SAU": "SA",
+    "SEN": "SN", "SRB": "RS", "SYC": "SC", "SLE": "SL", "SGP": "SG", "SVK": "SK", "SVN": "SI", "SLB": "SB", "SOM": "SO",
+    "ZAF": "ZA", "SSD": "SS", "ESP": "ES", "LKA": "LK", "SDN": "SD", "SUR": "SR", "SWE": "SE", "CHE": "CH", "SYR": "SY",
+    "TJK": "TJ", "TZA": "TZ", "THA": "TH", "TLS": "TL", "TGO": "TG", "TON": "TO", "TTO": "TT", "TUN": "TN", "TUR": "TR",
+    "TKM": "TM", "TUV": "TV", "UGA": "UG", "UKR": "UA", "ARE": "AE", "GBR": "GB", "USA": "US", "URY": "UY", "UZB": "UZ",
+    "VUT": "VU", "VEN": "VE", "VNM": "VN", "YEM": "YE", "ZMB": "ZM", "ZWE": "ZW"
+}
+
+def get_flag(iso2):
+    return "".join(chr(ord(c) + 127397) for c in iso2.upper())
 
 COUNTRIES_META = [
     # AFRICA (54)
@@ -217,8 +246,6 @@ COUNTRIES_META = [
     ("VUT", "Vanuatu", "Oceania", "Melanesia", 335000, 5.4, 70.8, "low", "Island health dispensaries; modeled via UN WPP.")
 ]
 
-# Cause of death baseline weights for Death Atlas Score
-# Sum(percentage * weight) = base score
 WEIGHTS = {
     "senescence": 1.00,
     "neurodegenerative": 0.85,
@@ -239,6 +266,8 @@ WEIGHTS = {
 
 def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence, note):
     total_deaths = round((pop * cdr) / 1000)
+    iso2 = ISO3_TO_ISO2[iso]
+    flag = get_flag(iso2)
     
     # Archetype detection based on continent, life expectancy, conflict indicators
     is_conflict = iso in ["UKR", "PSE", "SDN", "SYR", "YEM", "MMR", "SOM", "HTI", "AFG", "COD", "MLI", "BFA"]
@@ -246,12 +275,7 @@ def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence
     is_sub_saharan = continent == "Africa" and iso not in ["MUS", "SYC", "DZA", "TUN", "EGY", "MAR"]
     is_latin_america = continent in ["South America", "North America"] and iso not in ["USA", "CAN", "MCO", "AND", "SMR", "VAT"]
 
-    # Natural % typically 80% to 96%
-    # Accidental % typically 2.5% to 8%
-    # Intentional % typically 0.5% to 15% (higher in conflict/homicide zones)
-    
     if iso == "UKR":
-        # Ukraine 2025 wartime mortality
         pct_conflict = 10.8
         pct_homicide = 0.4
         pct_suicide = 1.3
@@ -268,7 +292,6 @@ def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence
         nat_infectious = 4.0
         nat_other = pct_natural - (nat_senescence + nat_cardio + nat_cancer + nat_resp + nat_neuro + nat_infectious)
     elif iso == "PSE":
-        # Palestine 2025 crisis
         pct_conflict = 32.5
         pct_homicide = 0.8
         pct_suicide = 0.4
@@ -285,7 +308,6 @@ def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence
         nat_infectious = 11.0
         nat_other = pct_natural - (nat_senescence + nat_cardio + nat_cancer + nat_resp + nat_neuro + nat_infectious)
     elif iso == "SDN":
-        # Sudan 2025 civil war & famine
         pct_conflict = 16.5
         pct_homicide = 1.5
         pct_suicide = 0.5
@@ -302,7 +324,6 @@ def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence
         nat_infectious = 31.0
         nat_other = pct_natural - (nat_senescence + nat_cardio + nat_cancer + nat_resp + nat_neuro + nat_infectious)
     elif iso == "HTI":
-        # Haiti gang violence & health collapse
         pct_conflict = 1.5
         pct_homicide = 7.8
         pct_suicide = 0.6
@@ -319,7 +340,6 @@ def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence
         nat_infectious = 31.0
         nat_other = pct_natural - (nat_senescence + nat_cardio + nat_cancer + nat_resp + nat_neuro + nat_infectious)
     elif is_high_income:
-        # High longevity archetype (Japan, Monaco, Switzerland, Spain, etc.)
         pct_conflict = 0.0
         pct_homicide = 0.05 if iso != "USA" else 0.45
         pct_suicide = 1.2 if iso not in ["KOR", "LTU", "RUS", "JPN"] else 1.8
@@ -328,7 +348,7 @@ def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence
             pct_transport = 1.2
             pct_occupational = 0.15
             pct_disasters = 0.02
-            pct_falls_other = 4.8 # accidental drug overdoses / falls
+            pct_falls_other = 4.8
         else:
             pct_transport = 0.3
             pct_occupational = 0.08
@@ -336,8 +356,6 @@ def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence
             pct_falls_other = 2.4
         
         pct_natural = 100.0 - (pct_conflict + pct_homicide + pct_suicide + pct_transport + pct_occupational + pct_disasters + pct_falls_other)
-        
-        # High longevity natural breakdown: high senescence, cancer, cardio, neuro
         nat_senescence = 12.0 if le > 83 else (9.0 if le > 81 else 6.0)
         nat_cardio = 27.0
         nat_cancer = 27.5
@@ -346,7 +364,6 @@ def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence
         nat_infectious = 4.5
         nat_other = pct_natural - (nat_senescence + nat_cardio + nat_cancer + nat_resp + nat_neuro + nat_infectious)
     elif is_sub_saharan:
-        # High communicable & maternal disease burden
         pct_conflict = 0.8 if is_conflict else 0.1
         pct_homicide = 1.4
         pct_suicide = 0.8
@@ -364,7 +381,6 @@ def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence
         nat_infectious = 44.0
         nat_other = pct_natural - (nat_senescence + nat_cardio + nat_cancer + nat_resp + nat_neuro + nat_infectious)
     elif is_latin_america:
-        # High transport and violence rates compared to Europe
         pct_conflict = 0.2 if iso not in ["COL", "MEX"] else 0.6
         pct_homicide = 3.8 if iso in ["BRA", "COL", "MEX", "VEN", "HND", "GTM"] else 1.8
         pct_suicide = 0.9
@@ -382,7 +398,6 @@ def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence
         nat_infectious = 13.0
         nat_other = pct_natural - (nat_senescence + nat_cardio + nat_cancer + nat_resp + nat_neuro + nat_infectious)
     else:
-        # Moderate / Emerging transition (Eastern Europe, parts of Asia, North Africa)
         pct_conflict = 0.05
         pct_homicide = 0.5
         pct_suicide = 1.1
@@ -400,7 +415,7 @@ def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence
         nat_infectious = 10.5
         nat_other = pct_natural - (nat_senescence + nat_cardio + nat_cancer + nat_resp + nat_neuro + nat_infectious)
 
-    # Calculate absolute numbers
+    # Absolute death calculations
     d_conflict = round(total_deaths * (pct_conflict / 100.0))
     d_homicide = round(total_deaths * (pct_homicide / 100.0))
     d_suicide = round(total_deaths * (pct_suicide / 100.0))
@@ -427,13 +442,16 @@ def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence
         d_cardio += d_other_nat
         d_other_nat = 0
 
-    # Calculate percentages
+    # Percentages
     pct_nat_total = round((d_natural / total_deaths) * 100, 2)
     pct_acc_total = round((d_accidental / total_deaths) * 100, 2)
     pct_int_total = round((d_intentional / total_deaths) * 100, 2)
 
-    # Compute Death Atlas Score:
-    # Weighted sum based on cause weights
+    # Per capita rates per 100,000 population
+    def p100k(val):
+        return round((val / pop) * 100000.0, 1)
+
+    # Score calculation
     score_components = [
         (d_senescence / total_deaths) * WEIGHTS["senescence"],
         (d_neuro / total_deaths) * WEIGHTS["neurodegenerative"],
@@ -452,11 +470,12 @@ def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence
     ]
     
     raw_score = 100.0 * sum(score_components)
-    # Calibrated score with 1 decimal place
     score = round(max(0.0, min(100.0, raw_score)), 1)
 
     return {
         "id": iso,
+        "iso2": iso2,
+        "flag": flag,
         "name": name,
         "continent": continent,
         "region": region,
@@ -467,39 +486,62 @@ def generate_country_data(iso, name, continent, region, pop, cdr, le, confidence
         "score": score,
         "data_confidence": confidence,
         "confidence_note": note,
+        "rates_per_100k": {
+            "total": p100k(total_deaths),
+            "natural": p100k(d_natural),
+            "accidental": p100k(d_accidental),
+            "intentional": p100k(d_intentional),
+            "senescence": p100k(d_senescence),
+            "cardiovascular": p100k(d_cardio),
+            "neoplasms": p100k(d_cancer),
+            "respiratory": p100k(d_resp),
+            "neurodegenerative": p100k(d_neuro),
+            "infectious_maternal": p100k(d_infectious),
+            "transport": p100k(d_transport),
+            "occupational": p100k(d_occupational),
+            "natural_disasters": p100k(d_disasters),
+            "falls_drowning_poisoning": p100k(d_falls),
+            "homicide": p100k(d_homicide),
+            "suicide": p100k(d_suicide),
+            "conflict_war": p100k(d_conflict),
+            "terrorism": p100k(d_terrorism)
+        },
         "groups": {
             "natural": {
                 "total": d_natural,
                 "percentage": pct_nat_total,
+                "rate_per_100k": p100k(d_natural),
                 "breakdown": {
-                    "senescence": { "total": d_senescence, "percentage": round((d_senescence / total_deaths) * 100, 2) },
-                    "cardiovascular": { "total": d_cardio, "percentage": round((d_cardio / total_deaths) * 100, 2) },
-                    "neoplasms": { "total": d_cancer, "percentage": round((d_cancer / total_deaths) * 100, 2) },
-                    "respiratory": { "total": d_resp, "percentage": round((d_resp / total_deaths) * 100, 2) },
-                    "neurodegenerative": { "total": d_neuro, "percentage": round((d_neuro / total_deaths) * 100, 2) },
-                    "infectious_maternal": { "total": d_infectious, "percentage": round((d_infectious / total_deaths) * 100, 2) },
-                    "other_natural": { "total": d_other_nat, "percentage": round((d_other_nat / total_deaths) * 100, 2) }
+                    "senescence": { "total": d_senescence, "percentage": round((d_senescence / total_deaths) * 100, 2), "rate_per_100k": p100k(d_senescence) },
+                    "cardiovascular": { "total": d_cardio, "percentage": round((d_cardio / total_deaths) * 100, 2), "rate_per_100k": p100k(d_cardio) },
+                    "neoplasms": { "total": d_cancer, "percentage": round((d_cancer / total_deaths) * 100, 2), "rate_per_100k": p100k(d_cancer) },
+                    "respiratory": { "total": d_resp, "percentage": round((d_resp / total_deaths) * 100, 2), "rate_per_100k": p100k(d_resp) },
+                    "neurodegenerative": { "total": d_neuro, "percentage": round((d_neuro / total_deaths) * 100, 2), "rate_per_100k": p100k(d_neuro) },
+                    "infectious_maternal": { "total": d_infectious, "percentage": round((d_infectious / total_deaths) * 100, 2), "rate_per_100k": p100k(d_infectious) },
+                    "other_natural": { "total": d_other_nat, "percentage": round((d_other_nat / total_deaths) * 100, 2), "rate_per_100k": p100k(d_other_nat) }
                 }
             },
             "accidental": {
                 "total": d_accidental,
                 "percentage": pct_acc_total,
+                "rate_per_100k": p100k(d_accidental),
                 "breakdown": {
-                    "transport": { "total": d_transport, "percentage": round((d_transport / total_deaths) * 100, 2) },
-                    "occupational": { "total": d_occupational, "percentage": round((d_occupational / total_deaths) * 100, 2) },
-                    "natural_disasters": { "total": d_disasters, "percentage": round((d_disasters / total_deaths) * 100, 2) },
-                    "falls_drowning_poisoning": { "total": d_falls, "percentage": round((d_falls / total_deaths) * 100, 2) },
-                    "other_accidental": { "total": d_other_acc, "percentage": round((d_other_acc / total_deaths) * 100, 2) }
+                    "transport": { "total": d_transport, "percentage": round((d_transport / total_deaths) * 100, 2), "rate_per_100k": p100k(d_transport) },
+                    "occupational": { "total": d_occupational, "percentage": round((d_occupational / total_deaths) * 100, 2), "rate_per_100k": p100k(d_occupational) },
+                    "natural_disasters": { "total": d_disasters, "percentage": round((d_disasters / total_deaths) * 100, 2), "rate_per_100k": p100k(d_disasters) },
+                    "falls_drowning_poisoning": { "total": d_falls, "percentage": round((d_falls / total_deaths) * 100, 2), "rate_per_100k": p100k(d_falls) },
+                    "other_accidental": { "total": d_other_acc, "percentage": round((d_other_acc / total_deaths) * 100, 2), "rate_per_100k": p100k(d_other_acc) }
                 }
             },
             "intentional": {
                 "total": d_intentional,
                 "percentage": pct_int_total,
+                "rate_per_100k": p100k(d_intentional),
                 "breakdown": {
-                    "homicide": { "total": d_homicide, "percentage": round((d_homicide / total_deaths) * 100, 2) },
-                    "suicide": { "total": d_suicide, "percentage": round((d_suicide / total_deaths) * 100, 2) },
-                    "conflict_war": { "total": d_conflict, "percentage": round((d_conflict / total_deaths) * 100, 2) },
-                    "terrorism": { "total": d_terrorism, "percentage": round((d_terrorism / total_deaths) * 100, 2) }
+                    "homicide": { "total": d_homicide, "percentage": round((d_homicide / total_deaths) * 100, 2), "rate_per_100k": p100k(d_homicide) },
+                    "suicide": { "total": d_suicide, "percentage": round((d_suicide / total_deaths) * 100, 2), "rate_per_100k": p100k(d_suicide) },
+                    "conflict_war": { "total": d_conflict, "percentage": round((d_conflict / total_deaths) * 100, 2), "rate_per_100k": p100k(d_conflict) },
+                    "terrorism": { "total": d_terrorism, "percentage": round((d_terrorism / total_deaths) * 100, 2), "rate_per_100k": p100k(d_terrorism) }
                 }
             }
         }
@@ -517,7 +559,6 @@ def main():
     for idx, c in enumerate(countries):
         c["rank"] = idx + 1
 
-    # Global aggregate metrics
     total_pop = sum(c["population"] for c in countries)
     total_deaths = sum(c["total_deaths"] for c in countries)
     total_natural = sum(c["groups"]["natural"]["total"] for c in countries)
@@ -538,19 +579,23 @@ def main():
             "global_population": total_pop,
             "global_deaths": total_deaths,
             "global_crude_death_rate": round((total_deaths / total_pop) * 1000, 2),
+            "global_rate_per_100k": round((total_deaths / total_pop) * 100000, 1),
             "global_score": round(weighted_score, 1),
             "groups_summary": {
                 "natural": {
                     "total": total_natural,
-                    "percentage": round((total_natural / total_deaths) * 100, 2)
+                    "percentage": round((total_natural / total_deaths) * 100, 2),
+                    "rate_per_100k": round((total_natural / total_pop) * 100000, 1)
                 },
                 "accidental": {
                     "total": total_accidental,
-                    "percentage": round((total_accidental / total_deaths) * 100, 2)
+                    "percentage": round((total_accidental / total_deaths) * 100, 2),
+                    "rate_per_100k": round((total_accidental / total_pop) * 100000, 1)
                 },
                 "intentional": {
                     "total": total_intentional,
-                    "percentage": round((total_intentional / total_deaths) * 100, 2)
+                    "percentage": round((total_intentional / total_deaths) * 100, 2),
+                    "rate_per_100k": round((total_intentional / total_pop) * 100000, 1)
                 }
             },
             "confidence_distribution": {
@@ -567,10 +612,11 @@ def main():
     with open("src/data/deaths-2025.json", "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, ensure_ascii=False)
 
-    print(f"Generated {len(countries)} countries in src/data/deaths-2025.json")
-    print(f"Global population: {total_pop:,} | Global deaths: {total_deaths:,} | Global Score: {round(weighted_score, 1)}")
-    print(f"Confidence: {payload['metadata']['confidence_distribution']}")
+    os.makedirs("public/data", exist_ok=True)
+    with open("public/data/deaths-2025.json", "w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2, ensure_ascii=False)
+
+    print(f"Generated {len(countries)} countries with Flags and Per-Capita Rates in src/data and public/data")
 
 if __name__ == "__main__":
     main()
-
